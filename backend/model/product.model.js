@@ -16,6 +16,9 @@ const productSchema = new mongoose.Schema(
       type: String,
       required: [true, "Image is required"],
     },
+    cloudinaryId: {
+      type: String,
+    },
     price: {
       type: Number,
       required: true,
