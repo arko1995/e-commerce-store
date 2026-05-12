@@ -174,10 +174,71 @@ const getRecommendations = async (req, res) => {
   }
 };
 
+const getProductsByCategory = async (req, res) => {
+  try {
+    const { category } = req.params;
+    const products = await Product.find({ category: category });
+
+    if (!products) {
+      return res.status(404).json({
+        success: false,
+        message: "No products in the selected category",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Products fetched successfully",
+      data: products,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error: error.message,
+    });
+  }
+};
+
+const toggleFeaturedProduct = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const product = await Product.findById(id);
+
+    if (product) {
+      product.isFeatured = !product.isFeatured;
+
+      const updatedProduct = await product.save();
+      await updateFeaturedProduct();
+    } else {
+      console.log("Product not found");
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Feature toggled successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error: error.message,
+    });
+  }
+};
+
+const updateFeaturedProduct = async () => {
+  const product = await Product.find({ isFeatured: true }).lean();
+  await redis.set("featuredProducts", JSON.stringify(product));
+};
+
 export {
   createProduct,
   getAllProducts,
   getFeaturedProduct,
   deleteProduct,
   getRecommendations,
+  getProductsByCategory,
+  toggleFeaturedProduct,
 };
