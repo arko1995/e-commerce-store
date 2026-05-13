@@ -6,6 +6,7 @@ import cartRoute from "./routes/cart.route.js";
 import { connectDB } from "./lib/db.js";
 import cookieParser from "cookie-parser";
 import couponRoute from "./routes/coupon.route.js";
+import paymentRoute from "./routes/payment.route.js";
 dotenv.config();
 const app = express();
 
@@ -18,6 +19,7 @@ app.use("/api/auth", authRoute);
 app.use("/api/products", productRoute);
 app.use("/api/cart", cartRoute);
 app.use("/api/coupon", couponRoute);
+app.use("/api/payment", paymentRoute);
 
 app.listen(PORT, async () => {
   try {
