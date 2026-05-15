@@ -1,6 +1,7 @@
 import Coupon from "../model/coupon.model.js";
 import { stripe } from "../lib/stripe.js";
 import dotenv from "dotenv";
+import Order from "../model/order.model.js";
 
 dotenv.config();
 
@@ -9,7 +10,7 @@ export const createCheckoutSession = async (req, res) => {
     const { products, couponCode } = req.body;
 
     if (!Array.isArray(products) || products.length === 0) {
-      res.status(400).json({
+      return res.status(400).json({
         success: false,
         message: "There is no item on products array",
       });
@@ -30,6 +31,7 @@ export const createCheckoutSession = async (req, res) => {
           },
           unit_amount: amount,
         },
+        quantity: item.quantity || 1,
       };
     });
 
@@ -49,7 +51,7 @@ export const createCheckoutSession = async (req, res) => {
       }
     }
 
-    const session = stripe.checkout.sessions.create({
+    const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       line_items: lineItem,
       mode: "payment",
@@ -66,16 +68,98 @@ export const createCheckoutSession = async (req, res) => {
       metadata: {
         userId: req.user._id.toString(),
         couponCode: couponCode || "",
+        products: JSON.stringify(
+          products.map((p) => ({
+            id: p._id,
+            quantity: p.quantity,
+            price: p.price,
+          })),
+        ),
       },
     });
-  } catch (error) {}
 
-  const createStripeCoupon = async (discountPercentage) => {
-    const coupon = await stripe.coupons.create({
-      percent_off: discountPercentage,
-      duration: "once",
+    if (totalAmount >= 2000) {
+      await createNewCoupon(req.user._id);
+    }
+
+    res.status(200).json({
+      success: true,
+      id: session.id,
+      totalAmount: totalAmount / 100,
     });
-
-    return coupon.id;
-  };
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal server error in payment controller",
+      error: error.message,
+    });
+  }
 };
+
+export const checkoutSuccess = async (req, res) => {
+  try {
+    const { sessionId } = req.body;
+
+    const session = await stripe.checkout.sessions.retrieve(sessionId);
+
+    if (session.payment_status === "paid") {
+      if (session.metadata.couponCode) {
+        await Coupon.findOneAndUpdate(
+          {
+            code: session.metadata.couponCode,
+            userId: session.metadata.userId,
+          },
+          { isActive: false },
+        );
+
+        const products = JSON.parse(session.metadata.products);
+        const newOrder = new Order({
+          user: session.metadata.userId,
+          products: products.map((product) => ({
+            productId: product.id,
+            quantity: product.quantity,
+            price: product.price,
+          })),
+          totalAmount: session.amount_total / 100,
+          striperSessionId: sessionId,
+          payment_intent: session.payment_intent,
+        });
+        await newOrder.save();
+
+        res.status(200).json({
+          success: true,
+          message: "Order created successfully",
+          orderId: newOrder.id,
+        });
+      }
+    }
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "internal server error",
+      error: error.message,
+    });
+  }
+};
+
+async function createStripeCoupon(discountPercentage) {
+  const coupon = await stripe.coupons.create({
+    percent_off: discountPercentage,
+    duration: "once",
+  });
+
+  return coupon.id;
+}
+
+async function createNewCoupon(userId) {
+  const newCoupon = new Coupon({
+    code: "GIFT" + Math.random().toString(36).substring(2, 8).toUpperCase(),
+    discountPercentage: 10,
+    expirationDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+    userId: userId,
+  });
+
+  await newCoupon.save();
+
+  return newCoupon;
+}
