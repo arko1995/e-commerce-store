@@ -28,3 +28,39 @@ export const getAnalyticsData = async () => {
     totalRevenue: totalRevenue,
   };
 };
+
+export const getDailySalesData = async (startDate, endDate) => {
+  const dailySalesData = await Order.aggregate([
+    {
+      $match: {
+        createdAt: {
+          $gte: startDate,
+          $lte: endDate,
+        },
+      },
+    },
+    {
+      $group: {
+        _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
+        sales: { $sum: 1 },
+        revenue: { $sum: "$totalAmount" },
+      },
+    },
+    {
+      $sort: { _id: 1 },
+    },
+  ]);
+};
+
+function getDatesInRange(startDate, endDate) {
+  const dates = [];
+
+  const currentDate = new Date(startDate);
+
+  if (currentDate <= endDate) {
+    dates.push(currentDate.toISOString().split("T")[0]);
+    currentDate.setDate(currentDate.getDate() + 1);
+  }
+
+  return dates;
+}
