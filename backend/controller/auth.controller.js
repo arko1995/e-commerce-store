@@ -208,35 +208,14 @@ const refreshToken = async (req, res) => {
 
 const getProfile = async (req, res) => {
   try {
-    console.log(req.cookies);
-
-    const accessToken = req.cookies.accessToken;
-
-    if (!accessToken) {
-      return res.status(401).json({
-        success: false,
-        message: "You've been logged out",
-      });
-    }
-
-    const decoded = jwt.verify(accessToken, process.env.ACCESS_TOKEN);
-    const user = await User.findById({ _id: decoded.userId });
-
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: "User not found",
-      });
-    }
-
     res.status(200).json({
       success: true,
       message: "Profile successfully fetched",
       data: {
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
+        _id: req.user._id,
+        name: req.user.name,
+        email: req.user.email,
+        role: req.user.role,
       },
     });
   } catch (error) {
