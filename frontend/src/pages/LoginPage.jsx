@@ -59,17 +59,15 @@ const LoginPage = () => {
                   type="text"
                   id="email"
                   required
-                  value={formData.email}
-                  onChange={(e) =>
-                    setFormData({ ...formData, email: e.target.value })
-                  }
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   className="block w-full px-3 py-2 pl-10 
                       bg-gray-700 border 
                       border-gray-600 rounded-md shadow-sm 
                       placeholder-gray-400 focus:outline-none 
                       focus:ring-emerald-500 
                       focus:border-emerald-500 sm:text-sm"
-                  placeholder="example@gmail.com"
+                  placeholder="you@example.com"
                 />
               </div>
             </div>
@@ -89,10 +87,8 @@ const LoginPage = () => {
                   type="password"
                   id="password"
                   required
-                  value={formData.password}
-                  onChange={(e) =>
-                    setFormData({ ...formData, password: e.target.value })
-                  }
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   className="block w-full px-3 py-2 pl-10 
                       bg-gray-700 border 
                       border-gray-600 rounded-md shadow-sm 
@@ -121,7 +117,7 @@ const LoginPage = () => {
                 </>
               ) : (
                 <>
-                  <UserPlus className="mr-2 h-5 w-5" aria-hidden="true" />
+                  <LogIn className="mr-2 h-5 w-5" aria-hidden="true" />
                   Login
                 </>
               )}
@@ -129,13 +125,13 @@ const LoginPage = () => {
           </form>
           <p className="mt-8 text-center text-sm text-gray-400">
             Not a member?{" "}
+            <Link
+              to={"/signup"}
+              className="font-medium text-emerald-400 hover:text-emerald-500 "
+            >
+              Sign Up here <ArrowRight className="inline h-4 w-4" />
+            </Link>
           </p>
-          <Link
-            to={"/signup"}
-            className="font-medium text-emerald-400 hover:text-emerald-500 "
-          >
-            Sign Up here <ArrowRight className="inline h-4 w-4" />
-          </Link>
         </div>
       </motion.div>
     </div>

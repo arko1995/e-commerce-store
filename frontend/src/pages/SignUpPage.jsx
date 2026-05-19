@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useUserStore } from "../stores/useUserStore.js";
 
 const SignUpPage = () => {
   const loading = false;
@@ -23,10 +24,13 @@ const SignUpPage = () => {
     confirmPassword: "",
   });
 
+  const { signUp } = useUserStore();
+
   const handleSubmit = (e) => {
     e.preventDefault();
-
     console.log(formData);
+
+    signUp(formData);
   };
 
   return (
@@ -104,7 +108,7 @@ const SignUpPage = () => {
                   placeholder-gray-400 focus:outline-none 
                   focus:ring-emerald-500 
                   focus:border-emerald-500 sm:text-sm"
-                  placeholder="example@gmail.com"
+                  placeholder="you@example.com"
                 />
               </div>
             </div>
@@ -197,13 +201,13 @@ const SignUpPage = () => {
           </form>
           <p className="mt-8 text-center text-sm text-gray-400">
             Already have an account?{" "}
+            <Link
+              to={"/login"}
+              className="font-medium text-emerald-400 hover:text-emerald-500 "
+            >
+              Login here <ArrowRight className="inline h-4 w-4" />
+            </Link>
           </p>
-          <Link
-            to={"/login"}
-            className="font-medium text-emerald-400 hover:text-emerald-500 "
-          >
-            Login here <ArrowRight className="inline h-4 w-4" />
-          </Link>
         </div>
       </motion.div>
     </div>
