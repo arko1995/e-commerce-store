@@ -86,6 +86,16 @@ const signUpAuth = async (req, res) => {
       data: user,
     });
   } catch (error) {
+    console.log("Error:", error);
+
+    if (error.name === "ValidationError") {
+      const messages = Object.values(error.errors).map((err) => err.message);
+      return res.status(400).json({
+        success: false,
+        message: messages[0],
+      });
+    }
+
     res.status(500).json({
       success: false,
       message: "Unable to signup due to internal server error",
@@ -96,6 +106,8 @@ const signUpAuth = async (req, res) => {
 
 const loginAuth = async (req, res) => {
   try {
+    console.log(req.body);
+
     const { email, password } = req.body;
     const parsedPass = password.toString();
     const user = await User.findOne({ email: email });
@@ -132,6 +144,8 @@ const loginAuth = async (req, res) => {
       },
     });
   } catch (error) {
+    console.log("login error:", error);
+
     return res.status(500).json({
       success: false,
       message: "Internal server error",
