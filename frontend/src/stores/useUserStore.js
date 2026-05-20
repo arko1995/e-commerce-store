@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import axios from "../lib/axios.js";
+import axiosInstance from "../lib/axios.js";
 import toast from "react-hot-toast";
 
 export const useUserStore = create((set, get) => ({
@@ -15,7 +15,11 @@ export const useUserStore = create((set, get) => ({
       return toast.error("Passwords do not match");
     }
     try {
-      const res = await axios.post("/auth/signup", { name, email, password });
+      const res = await axiosInstance.post("/auth/signup", {
+        name,
+        email,
+        password,
+      });
 
       set({ user: res.data.data, loading: false });
     } catch (error) {
@@ -30,7 +34,7 @@ export const useUserStore = create((set, get) => ({
     set({ loading: true });
 
     try {
-      const res = await axios.post("/auth/login", { email, password });
+      const res = await axiosInstance.post("/auth/login", { email, password });
       console.log(res.data.data);
 
       set({ user: res.data.data, loading: false });
@@ -38,5 +42,24 @@ export const useUserStore = create((set, get) => ({
       set({ loading: false });
       toast.error(error.response?.data?.message || "An error occurred");
     }
+  },
+
+  checkAuth: async () => {
+    try {
+      set({ checkingAuth: true });
+
+      const res = await axiosInstance.get("/auth/profile");
+
+      set({ user: res.data.data, checkingAuth: false });
+    } catch (error) {
+      set({ checkingAuth: false, user: null });
+    }
+  },
+
+  logOut: async () => {
+    try {
+      set({ loading: true });
+      const res = await axiosInstance.post("/auth/logout");
+    } catch (error) {}
   },
 }));
