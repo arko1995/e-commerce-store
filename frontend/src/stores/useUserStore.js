@@ -60,6 +60,7 @@ export const useUserStore = create((set, get) => ({
     try {
       set({ loading: true });
       const res = await axiosInstance.post("/auth/logout");
+      
     } catch (error) {}
   },
 }));
