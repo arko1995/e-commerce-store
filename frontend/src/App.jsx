@@ -3,7 +3,7 @@ import HomePage from "./pages/HomePage.jsx";
 import SignUpPage from "./pages/SignUpPage.jsx";
 import LoginPage from "./pages/LoginPage.jsx";
 import Navbar from "./components/Navbar.jsx";
-import { Toaster } from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 import { useUserStore } from "./stores/useUserStore.js";
 import { useEffect } from "react";
 import LoadingSpinner from "./components/LoadingSpinner.jsx";
@@ -41,7 +41,7 @@ function App() {
           <Route
             path="/secret-dashboard"
             element={
-              user?.role === "admin" ? <AdminPage /> : <Navigate to="/login" />
+              user?.role === "admin" ? <AdminPage /> : <Navigate to={"/"} />
             }
           />
           <Route />
