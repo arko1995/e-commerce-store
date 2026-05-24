@@ -2,6 +2,7 @@ import React from "react";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { PlusCircle, Upload, Loader } from "lucide-react";
+import { useProductStore } from "../stores/useProductStore";
 
 const categories = [
   "jean",
@@ -22,22 +23,31 @@ const CreateProductForm = () => {
     image: "",
   });
 
-  const loading = false;
+  const { createProduct, loading } = useProductStore();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(newProduct);
+
+    try {
+      await createProduct(newProduct);
+      setNewProduct({
+        name: "",
+        description: "",
+        price: "",
+        category: "",
+        image: "",
+      });
+    } catch (error) {
+      console.log("error creating a product");
+    }
   };
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       const reader = new FileReader();
-      console.log(reader);
 
       reader.onloadend = () => {
-        console.log(reader.result);
-
         setNewProduct({ ...newProduct, image: reader.result });
       };
 
@@ -148,7 +158,7 @@ const CreateProductForm = () => {
           >
             <option value="">Select a Category</option>
             {categories.map((category) => (
-              <option value="category" key="category">
+              <option value="category" key={category}>
                 {category}
               </option>
             ))}

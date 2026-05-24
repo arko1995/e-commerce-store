@@ -29,8 +29,6 @@ export const useUserStore = create((set, get) => ({
   },
 
   login: async ({ email, password }) => {
-    console.log({ email, password });
-
     set({ loading: true });
 
     try {
