@@ -11,10 +11,10 @@ export const useProductStore = create((set) => ({
     set({ loading: true });
     try {
       const res = await axiosInstance.post("/products", productData);
-      console.log(res.data);
+      console.log(res.data.data);
 
       set((prevState) => ({
-        products: [...prevState.products, res.data],
+        products: [...prevState.products, res.data.data],
         loading: false,
       }));
     } catch (error) {
@@ -23,11 +23,20 @@ export const useProductStore = create((set) => ({
     }
   },
 
-  fetchAllProducts: async()=>{
+  fetchAllProducts: async () => {
+    set({ loading: true });
 
-  }
+    try {
+      const res = await axiosInstance.get("/products");
+      console.log(res.data);
 
-  deleteProduct: async(id)=>{}
+      set({ products: res.data.data, loading: false });
+    } catch (error) {
+      set({ error: "Failed to fetch products", loading: false });
+      toast.error(error.response?.data?.error || "failed to fetch products");
+    }
+  },
 
-
+  deleteProduct: async (id) => {},
+  toggleFeaturedProduct: async (id) => {},
 }));
