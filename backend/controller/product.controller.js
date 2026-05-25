@@ -211,14 +211,14 @@ const toggleFeaturedProduct = async (req, res) => {
 
       const updatedProduct = await product.save();
       await updateFeaturedProduct();
+      res.status(200).json({
+        success: true,
+        message: "Feature toggled successfully",
+        data: updatedProduct,
+      });
     } else {
       console.log("Product not found");
     }
-
-    res.status(200).json({
-      success: true,
-      message: "Feature toggled successfully",
-    });
   } catch (error) {
     res.status(500).json({
       success: false,

@@ -5,13 +5,13 @@ import { PlusCircle, Upload, Loader } from "lucide-react";
 import { useProductStore } from "../stores/useProductStore";
 
 const categories = [
-  "jean",
-  "t-shirt",
-  "shoe",
+  "jeans",
+  "t-shirts",
+  "shoes",
   "glasses",
-  "jacket",
-  "suit",
-  "bag",
+  "jackets",
+  "suits",
+  "bags",
 ];
 
 const CreateProductForm = () => {
@@ -158,7 +158,7 @@ const CreateProductForm = () => {
           >
             <option value="">Select a Category</option>
             {categories.map((category) => (
-              <option value="category" key={category}>
+              <option value={category} key={category}>
                 {category}
               </option>
             ))}
