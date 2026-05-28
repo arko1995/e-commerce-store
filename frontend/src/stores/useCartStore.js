@@ -41,7 +41,9 @@ export const useCartStore = create((set, get) => ({
         return { cart: newCart };
       });
       get().calculateTotals();
+      set({ loading: false });
     } catch (error) {
+      set({ loading: false });
       toast.error(error.response?.data?.message || "An error occurred");
     }
   },
