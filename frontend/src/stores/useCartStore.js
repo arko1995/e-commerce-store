@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import axiosInstance from "../lib/axios";
+import axiosInstance from "../lib/axios.js";
 import toast from "react-hot-toast";
 import { CornerUpLeft } from "lucide-react";
 
@@ -44,7 +44,9 @@ export const useCartStore = create((set, get) => ({
       set({ loading: false });
     } catch (error) {
       set({ loading: false });
-      toast.error(error.response?.data?.message || "An error occurred");
+      console.log(error);
+
+      toast.error(error.response?.data?.error || "An error occurred");
     }
   },
 

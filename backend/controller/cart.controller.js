@@ -1,9 +1,10 @@
 import Product from "../model/product.model.js";
+import User from "../model/user.model.js";
 
 export const addToCart = async (req, res) => {
   try {
     const { productId } = req.body;
-    const user = req.user;
+    const user = await User.findById(req.user._id);
 
     const exists = user.cartItem.find(
       (item) => item.product.toString() === productId,
@@ -23,6 +24,8 @@ export const addToCart = async (req, res) => {
       data: user.cartItem,
     });
   } catch (error) {
+    console.log("error in cartItem", error.message);
+
     res.status(500).json({
       success: false,
       message: "internal server error",
@@ -33,7 +36,7 @@ export const addToCart = async (req, res) => {
 
 export const removeAllFromCart = async (req, res) => {
   try {
-    const { productId } = req.body;
+    const { id: productId } = req.body;
     const user = req.user;
 
     if (!productId) {

@@ -40,6 +40,8 @@ export const protectRoute = async (req, res, next) => {
       throw error;
     }
   } catch (error) {
+    console.log(error);
+
     res.status(500).json({
       success: false,
       message: "Internal server error",
@@ -59,6 +61,8 @@ export const adminRoute = async (req, res, next) => {
       });
     }
   } catch (error) {
+    console.log(error);
+
     res.status(500).json({
       success: false,
       message: "Internal Server Error",
