@@ -100,10 +100,16 @@ export const updateQuantity = async (req, res) => {
 
 export const getCartProducts = async (req, res) => {
   try {
-    const products = await Product.find({ _id: { $in: req.user.cartItem } });
+    const user = await User.findById(req.user._id);
+
+    const productId = user.cartItem.map((item) => item.product);
+
+    const products = await Product.find({ _id: { $in: productId } });
 
     const cartItems = products.map((product) => {
-      const item = req.user.cartItem.find((item) => item.id === product.id);
+      const item = user.cartItem.find(
+        (item) => item.product.toString() === product._id.toString(),
+      );
       return { ...product.toJSON(), quantity: item.quantity };
     });
 

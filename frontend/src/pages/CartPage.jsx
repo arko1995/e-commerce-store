@@ -1,7 +1,15 @@
 import React from "react";
-
+import {motion} from 'framer-motion'
 const CartPage = () => {
-  return <div>CartPage</div>;
+  
+  const EmptyCartUI = ()=> (
+    <motion.div></motion.div>
+  )
+  
+  
+  return (
+
+  )
 };
 
 export default CartPage;
