@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { useCartStore } from "../stores/useCartStore.js";
 import CartItem from "../components/CartItem.jsx";
 import PeopleAlsoBought from "../components/PeopleAlsoBought.jsx";
+import OrderSummary from "../components/OrderSummary.jsx";
 const EmptyCartUI = () => (
   <motion.div
     className="flex flex-col items-center justify-center space-y-4 py-16"
@@ -49,6 +50,17 @@ const CartPage = () => {
               </div>
             )}
           </motion.div>
+          {cart.length > 0 ? (
+            <motion.div
+              className="mx-auto mt-6 max-w-4xl flex-1 space-y-6 lg:mt-0 lg:w-full"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+            >
+              <OrderSummary />
+              {/* <GiftCouponCard /> */}
+            </motion.div>
+          ) : null}
         </div>
       </div>
     </div>
