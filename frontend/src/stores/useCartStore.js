@@ -14,7 +14,6 @@ export const useCartStore = create((set, get) => ({
     set({ loading: true });
     try {
       const res = await axiosInstance.get("/cart");
-      console.log(res.data.data);
 
       set({ cart: res.data.data, loading: false });
       get().calculateTotals();
@@ -49,6 +48,48 @@ export const useCartStore = create((set, get) => ({
       console.log(error);
 
       toast.error(error.response?.data?.error || "An error occurred");
+    }
+  },
+
+  removeFromCart: async (productId) => {
+    set({ loading: true });
+    try {
+      await axiosInstance.delete(`/cart/${productId}`);
+      set((prevState) => ({
+        cart: prevState.cart.filter((item) => item._id !== productId),
+      }));
+      toast.success("Product removed from cart successfully");
+      get().calculateTotals();
+      set({ loading: false });
+    } catch (error) {
+      set({ loading: false });
+      toast.error(
+        error.response?.data?.error || "Error deleting product from cart",
+      );
+    }
+  },
+
+  updateQuantity: async (productId, quantity) => {
+    console.log(productId);
+
+    set({ loading: true });
+    try {
+      if (quantity === 0) {
+        await get().removeFromCart(productId);
+        return;
+      }
+      await axiosInstance.put(`/cart/${productId}`, { quantity: quantity });
+
+      set((prev) => ({
+        cart: prev.cart.map((product) =>
+          product._id === productId ? { ...product, quantity } : product,
+        ),
+      }));
+      get().calculateTotals();
+
+      set({ loading: false });
+    } catch (error) {
+      toast.error(error.response?.data?.error || "Error updating quantity");
     }
   },
 
