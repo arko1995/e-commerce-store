@@ -31,10 +31,12 @@ export const useCartStore = create((set, get) => ({
       toast.success("Product added to cart");
 
       set((state) => {
-        const existingItem = state.cart.find((item) => item.id === product._id);
+        const existingItem = state.cart.find(
+          (item) => item._id === product._id,
+        );
         const newCart = existingItem
           ? state.cart.map((item) =>
-              item.id === product._id
+              item._id === product._id
                 ? { ...item, quantity: item.quantity + 1 }
                 : item,
             )

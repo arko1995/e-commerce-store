@@ -6,6 +6,7 @@ import { useCartStore } from "../stores/useCartStore.js";
 import CartItem from "../components/CartItem.jsx";
 import PeopleAlsoBought from "../components/PeopleAlsoBought.jsx";
 import OrderSummary from "../components/OrderSummary.jsx";
+import GiftCouponCard from "../components/GiftCouponCard.jsx";
 const EmptyCartUI = () => (
   <motion.div
     className="flex flex-col items-center justify-center space-y-4 py-16"
@@ -58,7 +59,7 @@ const CartPage = () => {
               transition={{ duration: 0.5, delay: 0.4 }}
             >
               <OrderSummary />
-              {/* <GiftCouponCard /> */}
+              <GiftCouponCard />
             </motion.div>
           ) : null}
         </div>

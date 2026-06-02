@@ -49,6 +49,8 @@ export const useUserStore = create((set, get) => ({
 
       set({ user: res.data.data, checkingAuth: false });
     } catch (error) {
+      console.log(error.message);
+
       set({ checkingAuth: false, user: null });
     }
   },
