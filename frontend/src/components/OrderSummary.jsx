@@ -15,7 +15,6 @@ const OrderSummary = () => {
 
   const handlePayment = async () => {
     try {
-      const stripe = await stripePromise;
       const res = await axiosInstance.post("/payment/create-checkout-session", {
         products: cart,
         coupon: coupon ? coupon.code : null,
@@ -26,7 +25,7 @@ const OrderSummary = () => {
 
       window.location.href = session.url;
     } catch (error) {
-      console.log(error);
+      console.log(error.response?.data || error.message);
     }
   };
 
