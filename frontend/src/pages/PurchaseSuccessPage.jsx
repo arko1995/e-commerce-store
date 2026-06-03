@@ -2,11 +2,47 @@ import { ArrowRight, CheckCircle, HandHeart } from "lucide-react";
 import React from "react";
 import Confetti from "react-confetti";
 import { Link } from "react-router-dom";
+import { useCartStore } from "../stores/useCartStore";
+import { useEffect } from "react";
+import { useState } from "react";
+import axiosInstance from "../lib/axios";
 
 const PurchaseSuccessPage = () => {
+  const [isProcessing, setIsProcessing] = useState(true);
+
+  const { clearCart } = useCartStore();
+
+  useEffect(() => {
+    const handleCheckoutSuccess = async (sessionId) => {
+      try {
+        await axiosInstance.post("/payment/checkout-success", { sessionId });
+        clearCart();
+      } catch (error) {
+        console.error(error.message);
+      }
+    };
+
+    const sessionId = new URLSearchParams(window.location.search).get(
+      "session_id",
+    );
+
+    if (sessionId) {
+      handleCheckoutSuccess(sessionId);
+    } else {
+      setIsProcessing(false);
+    }
+  }, [clearCart]);
+
   return (
     <div className="h-screen flex items-center justify-center px-4">
-      <Confetti numberOfPieces={500} recycle={false} />
+      <Confetti
+        numberOfPieces={500}
+        recycle={false}
+        gravity={0.1}
+        style={{ zIndex: 99 }}
+        width={window.innerWidth}
+        height={window.innerHeight}
+      />
 
       <div className="max-w-md w-full bg-gray-800 rounded-lg shadow-xl overflow-hidden relative z-10">
         <div className="p-6 sm:p-8">
