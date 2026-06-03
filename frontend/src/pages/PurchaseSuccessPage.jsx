@@ -9,29 +9,39 @@ import axiosInstance from "../lib/axios";
 
 const PurchaseSuccessPage = () => {
   const [isProcessing, setIsProcessing] = useState(true);
-
+  const [error, setError] = useState(null);
   const { clearCart } = useCartStore();
 
   useEffect(() => {
     const handleCheckoutSuccess = async (sessionId) => {
       try {
-        await axiosInstance.post("/payment/checkout-success", { sessionId });
+        await axiosInstance.post("/payment/checkout-success", {
+          sessionId,
+        });
+
         clearCart();
       } catch (error) {
         console.error(error.message);
+      } finally {
+        setIsProcessing(false);
       }
     };
 
     const sessionId = new URLSearchParams(window.location.search).get(
       "session_id",
     );
+    console.log(sessionId);
 
     if (sessionId) {
       handleCheckoutSuccess(sessionId);
     } else {
       setIsProcessing(false);
+      setError("No session Id");
     }
   }, [clearCart]);
+
+  if (isProcessing) return "...processing";
+  if (error) return `Error ${error}`;
 
   return (
     <div className="h-screen flex items-center justify-center px-4">

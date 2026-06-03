@@ -104,38 +104,45 @@ export const checkoutSuccess = async (req, res) => {
 
     const session = await stripe.checkout.sessions.retrieve(sessionId);
 
-    if (session.payment_status === "paid") {
-      if (session.metadata.couponCode) {
-        await Coupon.findOneAndUpdate(
-          {
-            code: session.metadata.couponCode,
-            userId: session.metadata.userId,
-          },
-          { isActive: false },
-        );
-
-        const products = JSON.parse(session.metadata.products);
-        const newOrder = new Order({
-          user: session.metadata.userId,
-          products: products.map((product) => ({
-            productId: product.id,
-            quantity: product.quantity,
-            price: product.price,
-          })),
-          totalAmount: session.amount_total / 100,
-          striperSessionId: sessionId,
-          payment_intent: session.payment_intent,
-        });
-        await newOrder.save();
-
-        res.status(200).json({
-          success: true,
-          message: "Order created successfully",
-          orderId: newOrder.id,
-        });
-      }
+    if (session.payment_status !== "paid") {
+      return res.status(400).json({
+        success: false,
+        message: "Payment not complete",
+      });
     }
+
+    if (session.metadata.couponCode) {
+      await Coupon.findOneAndUpdate(
+        {
+          code: session.metadata.couponCode,
+          userId: session.metadata.userId,
+        },
+        { isActive: false },
+      );
+    }
+    const products = JSON.parse(session.metadata.products);
+
+    const newOrder = new Order({
+      user: session.metadata.userId,
+      products: products.map((product) => ({
+        product: product.id,
+        quantity: product.quantity,
+        price: product.price,
+      })),
+      totalAmount: session.amount_total / 100,
+      striperSessionId: sessionId,
+      payment_intent: session.payment_intent,
+    });
+    await newOrder.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Order created successfully",
+      orderId: newOrder.id,
+    });
   } catch (error) {
+    console.log(error);
+
     res.status(500).json({
       success: false,
       message: "internal server error",

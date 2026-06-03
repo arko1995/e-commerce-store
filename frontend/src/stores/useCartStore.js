@@ -1,7 +1,6 @@
 import { create } from "zustand";
 import axiosInstance from "../lib/axios.js";
 import toast from "react-hot-toast";
-import { CornerUpLeft } from "lucide-react";
 
 export const useCartStore = create((set, get) => ({
   cart: [],
@@ -94,6 +93,10 @@ export const useCartStore = create((set, get) => ({
     } catch (error) {
       toast.error(error.response?.data?.error || "Error updating quantity");
     }
+  },
+
+  clearCart: async () => {
+    set({ cart: [], coupon: null, total: 0, subTotal: 0 });
   },
 
   calculateTotals: () => {
