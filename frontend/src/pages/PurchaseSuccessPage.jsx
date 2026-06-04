@@ -1,5 +1,4 @@
 import { ArrowRight, CheckCircle, HandHeart } from "lucide-react";
-import React from "react";
 import Confetti from "react-confetti";
 import { Link } from "react-router-dom";
 import { useCartStore } from "../stores/useCartStore";
@@ -10,7 +9,7 @@ import axiosInstance from "../lib/axios";
 const PurchaseSuccessPage = () => {
   const [isProcessing, setIsProcessing] = useState(true);
   const [error, setError] = useState(null);
-  const { clearCart } = useCartStore();
+  const { clearCart, cart } = useCartStore();
 
   useEffect(() => {
     const handleCheckoutSuccess = async (sessionId) => {

@@ -141,8 +141,6 @@ export const checkoutSuccess = async (req, res) => {
       orderId: newOrder.id,
     });
   } catch (error) {
-    console.log(error);
-
     res.status(500).json({
       success: false,
       message: "internal server error",

@@ -24,7 +24,7 @@ const PurchaseCancelPage = () => {
           <div className="bg-gray-700 rounded-lg p-4 mb-6">
             <p className="text-sm text-gray-400 text-center">
               If you encountered any issues during the checkout process, please
-              don&apos;t hesitate to contact our support team.
+              don't hesitate to contact our support team.
             </p>
           </div>
           <div className="space-y-4">
