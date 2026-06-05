@@ -2,7 +2,10 @@ import Coupon from "../model/coupon.model.js";
 
 export const getCoupon = async (req, res) => {
   try {
-    const coupon = await Coupon.find({ userId: req.user._id, isActive: true });
+    const coupon = await Coupon.findOne({
+      userId: req.user._id,
+      isActive: true,
+    });
 
     if (!coupon) {
       return res.status(404).json({
@@ -29,7 +32,7 @@ export const validateCoupon = async (req, res) => {
   try {
     const { code } = req.body;
 
-    const coupon = await Coupon.find({
+    const coupon = await Coupon.findOne({
       code: code,
       isActive: true,
       userId: req.user._id,
@@ -55,7 +58,7 @@ export const validateCoupon = async (req, res) => {
       message: "Valid coupon",
       data: {
         code: coupon.code,
-        discount: coupon.discountPercentage,
+        discountPercentage: coupon.discountPercentage,
         valid_till: coupon.expirationDate,
       },
     });

@@ -12,18 +12,18 @@ const GiftCouponCard = () => {
 
   useEffect(() => {
     if (coupon) {
-      coupon.map((item) => {
-        console.log(item.code);
-      });
+      setUserInputCode(coupon.code);
     }
-  });
+  }, [coupon]);
 
   const handleApplyCoupon = () => {
-    console.log(userInputCode);
+    if (!userInputCode) return;
+    applyCoupon(userInputCode);
   };
 
-  const handleRemoveCoupon = () => {
-    console.log("coupon removed");
+  const handleRemoveCoupon = async () => {
+    await removeCoupon();
+    setUserInputCode("");
   };
 
   return (

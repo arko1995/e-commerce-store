@@ -13,6 +13,7 @@ export const useCartStore = create((set, get) => ({
   getMyCoupon: async () => {
     try {
       const res = await axiosInstance.get("/coupon");
+
       set({ coupon: res.data.data });
     } catch (error) {
       console.error("Error fetching coupons:", error);
@@ -122,7 +123,7 @@ export const useCartStore = create((set, get) => ({
   },
 
   clearCart: async () => {
-    await axiosInstance.delete(`/cart/`);
+    await axiosInstance.delete(`/cart`);
     set({ cart: [], coupon: null, total: 0, subTotal: 0 });
   },
 

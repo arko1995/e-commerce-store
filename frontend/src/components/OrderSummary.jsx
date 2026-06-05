@@ -17,11 +17,10 @@ const OrderSummary = () => {
     try {
       const res = await axiosInstance.post("/payment/create-checkout-session", {
         products: cart,
-        coupon: coupon ? coupon.code : null,
+        couponCode: coupon ? coupon.code : null,
       });
 
       const session = res.data;
-      console.log(session);
 
       window.location.href = session.url;
     } catch (error) {
