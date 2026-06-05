@@ -6,7 +6,7 @@ export const getAnalyticsData = async () => {
   const totalUsers = await User.countDocuments();
   const totalProducts = await Product.countDocuments();
 
-  const salesData = Order.aggregate([
+  const salesData = await Order.aggregate([
     {
       $group: {
         _id: null,
@@ -16,7 +16,7 @@ export const getAnalyticsData = async () => {
     },
   ]);
 
-  const [totalSales, totalRevenue] = salesData[0] || {
+  const { totalSales, totalRevenue } = salesData[0] || {
     totalRevenue: 0,
     totalSales: 0,
   };
