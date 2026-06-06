@@ -55,7 +55,7 @@ export const getDailySalesData = async (startDate, endDate) => {
     const dateArray = getDatesInRange(startDate, endDate);
 
     return dateArray.map((date) => {
-      const foundData = dailySalesData.find((data) => data.id === date);
+      const foundData = dailySalesData.find((data) => data._id === date);
 
       return {
         date,
@@ -73,7 +73,7 @@ function getDatesInRange(startDate, endDate) {
 
   const currentDate = new Date(startDate);
 
-  if (currentDate <= endDate) {
+  while (currentDate <= endDate) {
     dates.push(currentDate.toISOString().split("T")[0]);
     currentDate.setDate(currentDate.getDate() + 1);
   }
