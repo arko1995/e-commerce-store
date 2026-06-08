@@ -99,8 +99,6 @@ export const useCartStore = create((set, get) => ({
   },
 
   updateQuantity: async (productId, quantity) => {
-    console.log(productId);
-
     set({ loading: true });
     try {
       if (quantity === 0) {
