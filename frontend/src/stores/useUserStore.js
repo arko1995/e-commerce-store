@@ -67,3 +67,16 @@ export const useUserStore = create((set, get) => ({
     }
   },
 }));
+
+let refreshPromise = null;
+
+axiosInstance.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config; //error.config contains the configuration of a failed http request
+
+    if(error.response?.status === 401){
+      
+    }
+  },
+);
