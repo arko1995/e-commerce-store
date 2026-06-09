@@ -8,18 +8,18 @@ import cookieParser from "cookie-parser";
 import couponRoute from "./routes/coupon.route.js";
 import paymentRoute from "./routes/payment.route.js";
 import analyticsRoute from "./routes/analytics.route.js";
+import path from "path";
 dotenv.config();
 const app = express();
 
 const PORT = process.env.PORT || 5000;
 
+const __dirname = path.resolve();
+
+console.log(__dirname);
+
 app.use(express.json({ limit: "10mb" }));
 app.use(cookieParser());
-
-app.use((req, res, next) => {
-  console.log(`${req.method}, ${req.url}`);
-  next();
-});
 
 app.use("/api/auth", authRoute);
 app.use("/api/products", productRoute);
@@ -27,6 +27,14 @@ app.use("/api/cart", cartRoute);
 app.use("/api/coupon", couponRoute);
 app.use("/api/payment", paymentRoute);
 app.use("/api/analytics", analyticsRoute);
+
+if (process.env.NODE_ENV === "Production") {
+  app.use(express.static(path.join(__dirname, "/frontend/dist")));
+}
+
+app.get(/(.*)/, (req, res) => {
+  res.sendFile(path.resolve(__dirname, "frontend", "dist", "index.html"));
+});
 
 app.listen(PORT, async () => {
   try {
