@@ -121,7 +121,7 @@ const loginAuth = async (req, res) => {
     const isMatch = await user.comparePassword(parsedPass);
 
     if (!isMatch) {
-      return res.status(401).json({
+      return res.status(400).json({
         success: false,
         message: "Invalid email or password",
       });
